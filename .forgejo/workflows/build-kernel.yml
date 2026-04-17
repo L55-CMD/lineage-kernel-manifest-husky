@@ -1,0 +1,114 @@
+name: build-kernel
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  BUILDER_IMAGE_REPOSITORY: git.deusch.me/ubports/lineage-kernel-tegu-builder
+
+jobs:
+  build-builder-image:
+    runs-on: alpine-docker
+    outputs:
+      builder_image: ${{ steps.meta.outputs.builder_image }}
+    steps:
+      - name: Install Docker CLI and Buildx
+        run: apk add --no-cache docker-cli docker-cli-buildx git openssh-client
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Forgejo Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: git.deusch.me
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          commit_short="$(printf '%s' "${{ github.sha }}" | cut -c1-7)"
+          branch_tag="$(printf '%s' "${{ github.ref_name }}" | sed 's#[^A-Za-z0-9_.-]#-#g')"
+          echo "commit_short=${commit_short}" >> "${GITHUB_OUTPUT}"
+          echo "branch_tag=${branch_tag}" >> "${GITHUB_OUTPUT}"
+          echo "builder_image=${BUILDER_IMAGE_REPOSITORY}:${commit_short}" >> "${GITHUB_OUTPUT}"
+
+      - name: Build and push (main branch)
+        if: github.ref_name == 'main' || github.ref_name == 'master'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.BUILDER_IMAGE_REPOSITORY }}:latest
+            ${{ steps.meta.outputs.builder_image }}
+          cache-from: type=registry,ref=${{ env.BUILDER_IMAGE_REPOSITORY }}:latest
+          cache-to: type=inline
+
+      - name: Build and push (other branches)
+        if: github.ref_name != 'main' && github.ref_name != 'master'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.BUILDER_IMAGE_REPOSITORY }}:${{ steps.meta.outputs.branch_tag }}
+            ${{ steps.meta.outputs.builder_image }}
+          cache-from: type=registry,ref=${{ env.BUILDER_IMAGE_REPOSITORY }}:latest
+          cache-to: type=inline
+
+  kernel:
+    runs-on: alpine-docker
+    needs: build-builder-image
+    env:
+      KERNEL_SOURCE_DIR: /shared/src/tegu-kernel
+      REPO_HOST: git.deusch.me
+      REPO_SSH_PORT: "222"
+      REPO_MANIFEST_URL: ssh://git@git.deusch.me:222/${{ github.repository }}.git
+      REPO_MANIFEST_BRANCH: ${{ github.ref_name }}
+      REPO_MANIFEST_FILE: default.xml
+      IMAGE_TAG: ${{ needs.build-builder-image.outputs.builder_image }}
+      SKIP_DOCKER_BUILD: "1"
+    steps:
+      - name: Install Docker CLI and Buildx
+        run: apk add --no-cache docker-cli docker-cli-buildx git openssh-client bash
+
+      - name: Checkout control repo
+        uses: actions/checkout@v4
+
+      - name: Login to Forgejo Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: git.deusch.me
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Build kernel in Docker
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          REPO_SYNC_JOBS: ${{ vars.REPO_SYNC_JOBS }}
+          BUILD_JOBS: ${{ vars.BUILD_JOBS }}
+        run: ./scripts/run-docker-build.sh
+
+      - name: Show build outputs
+        run: |
+          set -euo pipefail
+          dist_dir="${KERNEL_SOURCE_DIR}/out/tegu/dist"
+          if [ ! -d "${dist_dir}" ]; then
+            echo "Expected output directory not found: ${dist_dir}" >&2
+            exit 1
+          fi
+          find "${dist_dir}" -maxdepth 1 -type f -name '*.img' | sort
+
+      - name: Upload kernel image artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: tegu-kernel-images-${{ github.sha }}
+          path: ${{ env.KERNEL_SOURCE_DIR }}/out/tegu/dist/*.img
+          if-no-files-found: error

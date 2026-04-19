@@ -104,11 +104,13 @@ jobs:
             echo "Expected output directory not found: ${dist_dir}" >&2
             exit 1
           fi
-          find "${dist_dir}" -maxdepth 1 -type f -name '*.img' | sort
+          find "${dist_dir}" -maxdepth 1 -type f | sort
 
       - name: Upload kernel image artifacts
         uses: actions/upload-artifact@v3
         with:
           name: tegu-kernel-images-${{ github.sha }}
-          path: ${{ env.KERNEL_SOURCE_DIR }}/out/tegu/dist/*.img
+          path: |
+            ${{ env.KERNEL_SOURCE_DIR }}/out/tegu/dist/*.img
+            ${{ env.KERNEL_SOURCE_DIR }}/out/tegu/dist/Image.lz4
           if-no-files-found: error

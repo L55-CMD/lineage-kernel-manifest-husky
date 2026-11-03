@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source_dir="${KERNEL_SOURCE_DIR:-/shared/src/tegu-kernel}"
+source_dir="${KERNEL_SOURCE_DIR:-/shared/src/husky-kernel}"
 patches_dir="${source_dir}/kernel-patches"
-dist_dir="${source_dir}/out/tegu/dist"
+dist_dir="${source_dir}/out/shusky/dist"
 
 cd "${source_dir}"
 
@@ -19,12 +19,12 @@ if [ -d "${patches_dir}" ]; then
   "${patches_dir}/apply-patches.sh"
 fi
 
-if [ ! -f ./build_tegu.sh ]; then
-  echo "build_tegu.sh was not found in ${source_dir}" >&2
+if [ ! -f ./build_shusky.sh ]; then
+  echo "build_shusky.sh was not found in ${source_dir}" >&2
   exit 1
 fi
 
-bash ./build_tegu.sh
+bash ./build_shusky.sh
 
 if [ ! -d "${dist_dir}" ]; then
   echo "Expected output directory not found: ${dist_dir}" >&2

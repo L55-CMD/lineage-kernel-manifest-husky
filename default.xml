@@ -9,7 +9,7 @@
            review="android-review.googlesource.com"
            revision="refs/tags/android-16.0.0_r0.0" />
 
-  <remote  name="ubports-tegu"
+  <remote  name="ubports-husky"
            fetch="ssh://git@git.deusch.me:222/ubports" />
 
   <default revision="refs/heads/lineage-23.2"
@@ -37,7 +37,7 @@
   <project path="prebuilts/kernel-build-tools" name="kernel/prebuilts/build-tools" clone-depth="1" remote="aosp" />
   <project path="prebuilts/ndk-r23" name="toolchain/prebuilts/ndk/r23" clone-depth="1" remote="aosp" />
   <project path="tools/mkbootimg" name="platform/system/tools/mkbootimg" remote="aosp" />
-  <project path="kernel-patches" name="kernel-patches-tegu" remote="ubports-tegu" revision="refs/heads/halium-tegu" />
+  <project path="kernel-patches" name="kernel-patches-husky" remote="ubports-husky" revision="refs/heads/halium-husky" />
 
   <project path="manifest" name="LineageOS/android_kernel_google_gs-6.1_manifest" />
   <project path="private/devices" name="LineageOS/android_kernel_google_gs-6.1_devices">

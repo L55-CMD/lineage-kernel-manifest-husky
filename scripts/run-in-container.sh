@@ -3,7 +3,7 @@ set -euo pipefail
 
 workspace_dir="${WORKSPACE_DIR:?WORKSPACE_DIR is required}"
 home_dir="${HOME:-/tmp/kernel-home}"
-source_dir="${KERNEL_SOURCE_DIR:-/shared/src/tegu-kernel}"
+source_dir="${KERNEL_SOURCE_DIR:-/shared/src/husky-kernel}"
 ssh_dir_in_container="${SSH_DIR_IN_CONTAINER:-${home_dir}/.ssh}"
 debug_ssh="${DEBUG_SSH:-0}"
 git_user_name="${GIT_USER_NAME:-Forgejo CI}"

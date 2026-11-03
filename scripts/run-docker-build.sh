@@ -2,8 +2,8 @@
 set -euo pipefail
 
 workspace_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-image_tag="${IMAGE_TAG:-lineage-kernel-tegu-builder:local}"
-source_dir="${KERNEL_SOURCE_DIR:-/shared/src/tegu-kernel}"
+image_tag="${IMAGE_TAG:-lineage-kernel-husky-builder:local}"
+source_dir="${KERNEL_SOURCE_DIR:-/shared/src/husky-kernel}"
 ssh_host="${REPO_HOST:-git.deusch.me}"
 ssh_port="${REPO_SSH_PORT:-222}"
 ssh_key="${SSH_KEY:-}"
@@ -44,7 +44,7 @@ docker run --rm \
   -e WORKSPACE_DIR="$(pwd)" \
   -e KERNEL_SOURCE_DIR="${source_dir}" \
   -e REPO_MANIFEST_URL="${REPO_MANIFEST_URL:-$(git -C "${workspace_dir}" remote get-url origin)}" \
-  -e REPO_MANIFEST_BRANCH="${REPO_MANIFEST_BRANCH:-$(git -C "${workspace_dir}" branch --show-current || printf '%s' halium-tegu)}" \
+  -e REPO_MANIFEST_BRANCH="${REPO_MANIFEST_BRANCH:-$(git -C "${workspace_dir}" branch --show-current || printf '%s' halium-husky)}" \
   -e REPO_MANIFEST_FILE="${REPO_MANIFEST_FILE:-default.xml}" \
   -e REPO_SYNC_JOBS="${REPO_SYNC_JOBS:-}" \
   -e BUILD_JOBS="${BUILD_JOBS:-}" \

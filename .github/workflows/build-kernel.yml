@@ -5,7 +5,8 @@ on:
   workflow_dispatch:
 
 env:
-  KERNEL_SOURCE_DIR: /shared/src/husky-kernel
+  # Under the workspace so no root-owned paths are needed on hosted runners
+  KERNEL_SOURCE_DIR: /home/runner/work/kernel-src/husky-kernel
 
 jobs:
   kernel:

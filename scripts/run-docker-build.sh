@@ -11,7 +11,7 @@ skip_docker_build="${SKIP_DOCKER_BUILD:-0}"
 container_home="/tmp/kernel-home"
 container_ssh_dir="${container_home}/.ssh"
 
-mkdir -p /shared "${source_dir}"
+mkdir -p "${source_dir}"
 
 if [ "${skip_docker_build}" != "1" ]; then
   docker build -t "${image_tag}" -f "${workspace_dir}/Dockerfile" "${workspace_dir}"
@@ -38,7 +38,7 @@ if [ -n "${ssh_key}" ]; then
   ssh_command="${ssh_command} -i ${container_ssh_dir}/id_ed25519 -o IdentitiesOnly=yes"
 fi
 
-docker_volumes=(-v "${workspace_dir}:${workspace_dir}" -v /shared:/shared)
+docker_volumes=(-v "${workspace_dir}:${workspace_dir}" -v "${source_dir}:${source_dir}")
 if [ -n "${JOB_CONTAINER_NAME:-}" ]; then
   docker_volumes=(--volumes-from "${JOB_CONTAINER_NAME}")
 fi

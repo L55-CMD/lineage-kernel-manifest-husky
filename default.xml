@@ -26,13 +26,13 @@
   <project path="external/python/absl-py" name="platform/external/python/absl-py" remote="aosp" />
   <project path="external/stardoc" name="platform/external/stardoc" remote="aosp" />
   <project path="kernel/configs" name="kernel/configs" remote="aosp" revision="bd79f38685cf939ab836dd8ddd2e01506ccff47a" />
-  <project path="prebuilts/bazel/linux-x86_64" name="platform/prebuilts/bazel/linux-x86_64" clone-depth="1" remote="aosp" />
-  <project path="prebuilts/build-tools" name="platform/prebuilts/build-tools" clone-depth="1" remote="aosp" />
+  <project path="prebuilts/bazel/linux-x86_64" name="platform/prebuilts/bazel/linux-x86_64" remote="aosp" />
+  <project path="prebuilts/build-tools" name="platform/prebuilts/build-tools" remote="aosp" />
   <project path="prebuilts/clang/host/linux-x86" name="platform/prebuilts/clang/host/linux-x86" revision="7f17fbadc9ee07a636afb6083bf84c481a7cc2ab" remote="aosp" />
-  <project path="prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8" name="platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8" clone-depth="1" remote="aosp" />
-  <project path="prebuilts/jdk/jdk11" name="platform/prebuilts/jdk/jdk11" clone-depth="1" remote="aosp" />
-  <project path="prebuilts/kernel-build-tools" name="kernel/prebuilts/build-tools" clone-depth="1" remote="aosp" />
-  <project path="prebuilts/ndk-r23" name="toolchain/prebuilts/ndk/r23" clone-depth="1" remote="aosp" />
+  <project path="prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8" name="platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8" remote="aosp" />
+  <project path="prebuilts/jdk/jdk11" name="platform/prebuilts/jdk/jdk11" remote="aosp" />
+  <project path="prebuilts/kernel-build-tools" name="kernel/prebuilts/build-tools" remote="aosp" />
+  <project path="prebuilts/ndk-r23" name="toolchain/prebuilts/ndk/r23" remote="aosp" />
   <project path="tools/mkbootimg" name="platform/system/tools/mkbootimg" remote="aosp" />
   <project path="kernel-patches" name="l55-cmd/kernel-patches-husky" remote="github" revision="refs/heads/halium-husky" />
 

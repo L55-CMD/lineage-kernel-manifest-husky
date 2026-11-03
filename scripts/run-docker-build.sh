@@ -38,6 +38,11 @@ if [ -n "${ssh_key}" ]; then
   ssh_command="${ssh_command} -i ${container_ssh_dir}/id_ed25519 -o IdentitiesOnly=yes"
 fi
 
+docker_volumes=(-v "${workspace_dir}:${workspace_dir}" -v /shared:/shared)
+if [ -n "${JOB_CONTAINER_NAME:-}" ]; then
+  docker_volumes=(--volumes-from "${JOB_CONTAINER_NAME}")
+fi
+
 docker run --rm \
   --user "$(id -u):$(id -g)" \
   -e HOME="${container_home}" \
@@ -52,10 +57,9 @@ docker run --rm \
   -e REPO_SSH_PORT="${ssh_port}" \
   -e SSH_DIR_IN_CONTAINER="${ssh_dir}" \
   -e GIT_SSH_COMMAND="${ssh_command}" \
-  --volumes-from "${JOB_CONTAINER_NAME}" \
+  "${docker_volumes[@]}" \
   -w "$(pwd)" \
   -v /etc/group:/etc/group:ro \
   -v /etc/passwd:/etc/passwd:ro \
-  -v /shared:/shared \
   "${image_tag}" \
   ./scripts/run-in-container.sh

@@ -10,6 +10,8 @@ env:
 jobs:
   kernel:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Free up disk space
         run: |
@@ -66,20 +68,20 @@ jobs:
           (cd "${dist_dir}" && zip -1 -j "${zip_path}" "${existing[@]}")
           echo "path=${zip_path}" >> "${GITHUB_OUTPUT}"
 
-      - name: Upload kernel.zip to packages release
+      - name: Upload kernel.zip to this repo's release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PKG_VERSION: ${{ steps.pkgver.outputs.version }}
           PKG_FILE: ${{ steps.kernelzip.outputs.path }}
         run: |
           set -euo pipefail
-          # Rolling per-branch release asset: <owner>/husky-packages release
-          # tagged <branch> (device CI falls back to the "main" release).
-          if ! gh release view "${PKG_VERSION}" --repo "${{ github.repository_owner }}/husky-packages" >/dev/null 2>&1; then
-            gh release create "${PKG_VERSION}" --repo "${{ github.repository_owner }}/husky-packages" \
-              --title "Packages (${PKG_VERSION})" \
-              --notes "Kernel package for branch \`${PKG_VERSION}\` (commit ${{ github.sha }})." \
+          # Rolling per-branch release in THIS repo; the device CI resolves
+          # kernel.zip from <owner>/lineage-kernel-manifest-husky/releases/download
+          # with fallback to the "main" release.
+          if ! gh release view "${PKG_VERSION}" >/dev/null 2>&1; then
+            gh release create "${PKG_VERSION}" \
+              --title "Kernel package (${PKG_VERSION})" \
+              --notes "kernel.zip for branch \`${PKG_VERSION}\` (commit ${{ github.sha }})." \
               --latest=false
           fi
-          gh release upload "${PKG_VERSION}" --repo "${{ github.repository_owner }}/husky-packages" \
-            "${PKG_FILE}#kernel.zip" --clobber
+          gh release upload "${PKG_VERSION}" "${PKG_FILE}#kernel.zip" --clobber

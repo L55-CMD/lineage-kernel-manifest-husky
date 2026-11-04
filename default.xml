@@ -34,7 +34,7 @@
   <project path="prebuilts/kernel-build-tools" name="kernel/prebuilts/build-tools" clone-depth="1" remote="aosp" />
   <project path="prebuilts/ndk-r23" name="toolchain/prebuilts/ndk/r23" clone-depth="1" remote="aosp" />
   <project path="tools/mkbootimg" name="platform/system/tools/mkbootimg" remote="aosp" />
-  <project path="kernel-patches" name="l55-cmd/kernel-patches-husky" remote="github" revision="refs/heads/halium-husky-ltonone" />
+  <project path="kernel-patches" name="l55-cmd/kernel-patches-husky" remote="github" revision="refs/heads/halium-husky-nocfi" />
 
   <project path="manifest" name="LineageOS/android_kernel_google_gs-6.1_manifest" />
   <project path="private/devices" name="LineageOS/android_kernel_google_gs-6.1_devices">

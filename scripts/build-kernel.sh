@@ -24,7 +24,7 @@ if [ ! -f ./build_shusky.sh ]; then
   exit 1
 fi
 
-bash ./build_shusky.sh --lto=none
+tools/bazel run --lto=none --config=stamp --config=shusky //private/devices/google/shusky:zuma_shusky_dist
 
 if [ ! -d "${dist_dir}" ]; then
   echo "Expected output directory not found: ${dist_dir}" >&2

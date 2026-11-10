@@ -2,6 +2,10 @@ name: build-kernel
 
 on:
   push:
+    # Branches only: tag pushes check out a detached HEAD and run-docker-build.sh
+    # cannot resolve REPO_MANIFEST_BRANCH from it (falls back to halium-husky).
+    branches:
+      - '**'
   workflow_dispatch:
 
 env:
@@ -77,8 +81,7 @@ jobs:
         run: |
           set -euo pipefail
           # Rolling per-branch release in THIS repo; the device CI resolves
-          # kernel.zip from <owner>/lineage-kernel-manifest-husky/releases/download
-          # with fallback to the "main" release.
+          # kernel.zip from <owner>/lineage-kernel-manifest-husky/releases/download/<branch>
           if ! gh release view "${PKG_VERSION}" >/dev/null 2>&1; then
             gh release create "${PKG_VERSION}" \
               --title "Kernel package (${PKG_VERSION})" \
